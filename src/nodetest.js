@@ -14,7 +14,6 @@ const resRoutes = require('./roots/resRoot');
 // Utiliser le middleware CORS
 app.use(cors({ origin: 'http://localhost:3000' })); // Autorise seulement les requêtes venant de React
 
-
 // Middleware pour parser le corps des requêtes en JSON
 app.use(express.json());
 
