@@ -1,0 +1,101 @@
+
+/* Container pour le formulaire */
+.Task-form {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    animation: slideIn 0.6s ease;
+}
+
+/* Animation pour l'entrée du formulaire */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.Task-form {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Prend tout l'espace disponible */
+    max-width: 1200px; /* Largeur maximale souhaitée */
+    animation: slideIn 0.6s ease;
+    margin: 0 auto; /* Centre horizontalement */
+}
+
+/* Titre du formulaire */
+.Task-form h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Style pour chaque label */
+.Task-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #555;
+}
+
+/* Style pour les champs de saisie */
+.Task-form input, 
+.Task-form select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+/* Effet lorsque le champ est actif */
+.Task-form input:focus,
+.Task-form select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+    outline: none;
+}
+
+/* Style spécifique pour le select */
+.Task-form .role-select {
+    appearance: none;
+    background: #fff;
+    cursor: pointer;
+}
+
+/* Bouton de soumission */
+.Task-form button {
+    width: 100%;
+    padding: 12px;
+    background-color: #7b5af0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Effet hover sur le bouton */
+.Task-form button:hover {
+    background-color: #6ca8f7;
+    transform: scale(1.02);
+}
+
+/* Transition du bouton */
+.Task-form button:active {
+    transform: scale(0.98);
+}
+
+/* Placeholder pour les champs de saisie */
+.Task-form input::placeholder {
+    color: #aaa;
+    font-size: 14px;
+}

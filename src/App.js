@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Login from './pages/login';
+import { AdminHome } from './pages/adminHome'; // Importation d'une exportation nommée
+import CreateUser from './pages/createUser';
+import UserHome from './pages/userHome';
+import CreateTask from './pages/createTask';
+import Calendrier from './pages/calendrier';
+import AvancementEmployee from './pages/avcEmpl';
+import OverdueTasks from './pages/overdueTasks';
+import UpdateInfo from './pages/updateInfoAdmin';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/createUser" element={<CreateUser />} />
+        <Route path="/updateUser" element={<UpdateInfo />} />
+        <Route path="/overdueTasks" element={<OverdueTasks />} />
+        <Route path="/createTAsk" element={<CreateTask />} />
+        <Route path="/calendrier" element={<Calendrier />} />
+        <Route path="/admin-home" element={<AdminHome />} />
+        <Route path="/avancementEmpl" element={<AvancementEmployee />} />
+        <Route path="/user-home" element={<UserHome />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;
