@@ -1,0 +1,113 @@
+create database gestionTache;
+use gestionTache
+-- Si la table 'user' n'existe pas, vous pouvez la créer avec un index sur 'email'
+CREATE TABLE user (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+-- Si la table 'user' existe déjà mais sans index sur 'email', ajoutez l'index
+CREATE UNIQUE INDEX idx_user_email ON user(email);
+
+INSERT INTO user (name, email, password) VALUES ('John Doe', 'john.doe@example.com', 'password123');
+
+INSERT INTO user (name, email, password) VALUES ('Jane Smith', 'jane.smith@example.com', 'securepass456');
+
+INSERT INTO user (name, email, password) VALUES ('Alice Johnson', 'alice.johnson@example.com', 'mypassword789');
+
+INSERT INTO user (name, email, password) VALUES ('Bob Brown', 'bob.brown@example.com', 'password321');
+
+CREATE TABLE role (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT
+);
+ 
+ALTER TABLE user
+ADD COLUMN role_id INT,
+ADD CONSTRAINT fk_role
+FOREIGN KEY (role_id) REFERENCES role(id);
+
+
+
+INSERT INTO role (name, description) VALUES
+('Admin', 'Administrator with full access rights'),
+('User', 'Regular user with limited access rights'),
+('Moderator', 'User with permissions to moderate content'),
+('Guest', 'User with read-only access');
+CREATE TABLE notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_email VARCHAR(255) NOT NULL,
+    notification TEXT,
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_email) REFERENCES user(email)
+);
+-- Insertion de notifications pour les utilisateurs
+INSERT INTO notifications (user_email, notification) VALUES
+('john.doe@example.com', 'Welcome, John Doe! Your account has been created successfully.'),
+('jane.smith@example.com', 'Welcome, Jane Smith! Don\'t forget to check your settings.'),
+('alice.johnson@example.com', 'Welcome, Alice Johnson! You have new messages waiting for you.'),
+('bob.brown@example.com', 'Welcome, Bob Brown! Explore your new dashboard features.');
+ALTER TABLE notifications
+ADD COLUMN checked BOOLEAN DEFAULT FALSE;
+
+CREATE TABLE tasks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_email VARCHAR(255) NOT NULL,
+    task_description TEXT,
+    status ENUM('completed', 'pending') NOT NULL,
+    FOREIGN KEY (user_email) REFERENCES user(email)
+);
+ALTER TABLE tasks ADD COLUMN date DATE NOT NULL;
+
+INSERT INTO tasks (user_email, task_description, status, date) VALUES
+('john.doe@example.com', 'Complete project report', 'completed', '2024-09-01'),
+('john.doe@example.com', 'Attend team meeting', 'pending', '2024-09-01'),
+('jane.smith@example.com', 'Update website', 'completed', '2024-09-02'),
+('jane.smith@example.com', 'Review budget', 'pending', '2024-09-02'),
+('alice.johnson@example.com', 'Prepare presentation', 'completed', '2024-09-03'),
+('bob.brown@example.com', 'Finalize contract', 'pending', '2024-09-03');
+
+
+INSERT INTO tasks (user_email, task_description, status, date)
+VALUES 
+('john.doe@example.com', 'Préparer le rapport de vente', 'pending', CURDATE()),
+('john.doe@example.com', 'Réunion avec l\'équipe technique', 'completed', CURDATE()),
+('john.doe@example.com', 'Envoyer le devis au client', 'pending', CURDATE());
+
+
+
+-- Créer la table 'dashboard_preferences' avec une clé étrangère vers 'user'
+CREATE TABLE dashboard_preferences (
+    user_email VARCHAR(255) PRIMARY KEY,
+    theme VARCHAR(50) DEFAULT 'light',
+    layout VARCHAR(50) DEFAULT 'list',
+    FOREIGN KEY (user_email) REFERENCES user(email)
+);
+-- Insertion de données dans la table 'dashboard_preferences'
+INSERT INTO dashboard_preferences (user_email, theme, layout) VALUES
+('john.doe@example.com', 'dark', 'grid'),
+('jane.smith@example.com', 'light', 'list'),
+('alice.johnson@example.com', 'dark', 'list'),
+('bob.brown@example.com', 'light', 'grid');
+
+CREATE TABLE reservations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    task_id INT NOT NULL,
+    date DATE NOT NULL,
+    time TIME NOT NULL,
+    status ENUM('confirmed', 'cancelled', 'pending') NOT NULL,
+    FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE
+);
+
+
+INSERT INTO reservations (task_id, date, time, status) VALUES
+(6, '2024-09-01', '10:00:00', 'confirmed'),  -- Réservation pour "Complete project report"
+(2, '2024-09-01', '14:00:00', 'cancelled'),  -- Réservation pour "Attend team meeting"
+(3, '2024-09-02', '09:00:00', 'confirmed'),  -- Réservation pour "Update website"
+(4, '2024-09-02', '11:00:00', 'pending');    -- Réservation pour "Review budget"
+
+
+
