@@ -106,6 +106,79 @@ exports.gettasks = (req, res) => {
         }
     });
 };
+exports.getTasksAndUsers = (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1]; // Récupération du token depuis les headers
+    if (!token) {
+        return res.status(401).send("No token provided");
+    }
+
+    // Décodage du token pour obtenir l'email
+    let email;
+    try {
+        const decoded = jwt.verify(token, secretKey); // Utilisez la même clé secrète pour vérifier le token
+        email = decoded.email;
+    } catch (err) {
+        return res.status(401).send("Invalid token");
+    }
+
+    const getDashboardInfoQuery = `
+        SELECT 
+            u.name, 
+            u.email,
+            COUNT(CASE WHEN t.status = 'completed' THEN 1 END) AS completed_tasks,
+            COUNT(CASE WHEN t.status = 'pending' THEN 1 END) AS pending_tasks,
+            COUNT(CASE WHEN t.date < NOW() THEN 1 END) AS overdue_tasks
+        FROM user u
+        LEFT JOIN tasks t ON u.email = t.user_email
+        GROUP BY u.name, u.email
+    `;
+    
+    connection.query(getDashboardInfoQuery, (err, result) => {
+        if (err) {
+            console.error("Error while selecting tasks:", err);
+            return res.status(500).send("Error while selecting tasks");
+        } else if (result.length === 0) {
+            return res.status(404).send("Tasks info not found");
+        } else {
+            return res.status(200).json(result);
+        }
+    });
+};
+exports.overdueTasks = (req,res)=>{
+    const token = req.headers.authorization?.split(" ")[1]; // Récupération du token depuis les headers
+    if (!token) {
+        return res.status(401).send("No token provided");
+    }
+
+    // Décodage du token pour obtenir l'email
+    let email;
+    try {
+        const decoded = jwt.verify(token, secretKey); // Utilisez la même clé secrète pour vérifier le token
+        email = decoded.email;
+    } catch (err) {
+        return res.status(401).send("Invalid token");
+    }
+
+    const getOverduerQuery = `
+        SELECT 
+            task_description,
+            date
+        FROM tasks t
+        WHERE user_email=?
+    `;
+    
+    connection.query(getOverduerQuery, [email], (err, result) => {
+        if (err) {
+            console.error("Error while selecting tasks:", err);
+            return res.status(500).send("Error while selecting tasks");
+        } else if (result.length === 0) {
+            return res.status(404).send("Tasks info not found");
+        } else {
+            return res.status(200).json(result);
+        }
+    });
+};
+
 exports.gettasksPerDay = (req, res) => {
     const token = req.headers.authorization?.split(" ")[1]; // Récupération du token depuis les headers
     if (!token) {
@@ -149,9 +222,9 @@ exports.createtask = (req, res) => {
     } catch (err) {
         return res.status(401).send("Invalid token");
     }
-    const {task_description, status} = req.body;
-    const createTaskQuery = `INSERT INTO tasks(user_email,task_description , status) VALUES(?,?,?)`;
-    connection.query(createTaskQuery, [email, task_description, status ], (err, result) => {
+    const {task_description, status,date} = req.body;
+    const createTaskQuery = `INSERT INTO tasks(user_email,task_description , status,date) VALUES(?,?,?,?)`;
+    connection.query(createTaskQuery, [email, task_description, status, date ], (err, result) => {
         if (err) {
             console.error("Error while creating tasks:", err);
             res.status(500).send("Error while creating tasks");

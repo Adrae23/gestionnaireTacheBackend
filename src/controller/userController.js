@@ -20,11 +20,11 @@ connection.connect((err) => {
 
 // Créer un utilisateur
 exports.createUser = (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
-    const createUserQuery = "INSERT INTO user (name, email, password) VALUES (?, ?, ?)";
+    const createUserQuery = "INSERT INTO user (name, email, password,role) VALUES (?, ?, ?,?)";
 
-    connection.query(createUserQuery, [name, email, password], (err, result) => {
+    connection.query(createUserQuery, [name, email, password, role], (err, result) => {
         if (err) {
             console.error("Error creating user:", err);
             res.status(500).send("Error creating user");
